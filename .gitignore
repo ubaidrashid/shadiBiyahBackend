@@ -1,0 +1,55 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build directories
+dist/
+build/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Coverage reports
+coverage/
+
+# Next.js / Nuxt
+.next/
+.nuxt/
+
+# Parcel
+.cache/
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+
+# GitHub Codespaces
+.devcontainer/
+
+# React Native
+.expo/
+.expo-shared/
