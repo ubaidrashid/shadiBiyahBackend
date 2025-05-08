@@ -12,46 +12,73 @@ export const registerUser = async (req, res) => {
     }
 
     try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ message: "Email is already registered" });
+        }
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user
-        const newUser = new User({ username, email, password: hashedPassword });
+        // Create and save the new user
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+        });
+
         await newUser.save();
 
-        res.status(201).json({ message: "User registered successfully" });
+        // Convert to plain object and remove password
+        const userObject = newUser.toObject();
+        delete userObject.password;
+
+        // Generate JWT token
+        const token = generateToken(newUser._id);
+
+        res.status(201).json({
+            message: "User registered successfully",
+            user: userObject,
+            token,
+        });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: "Server error", error });
+            console.error("Signup error:", error); // log in Railway logs
+            res.status(500).json({ message: "Server error", error: error.message || error });
+          
+          
     }
 };
 
+
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
-  
+
     try {
-      const user = await User.findOne({ email });
-  
-      if (!user) return res.status(400).json({ message: 'User not found' });
-  
-      const isMatch = bcrypt.compare(password, user.password);
-  
-      if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
-  
-      const token = generateToken(user._id);
-  
-      res.status(200).json({
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-        token,
-      });
+        const user = await User.findOne({ email });
+
+        if (!user) return res.status(400).json({ message: 'User not found' });
+
+        const isMatch = await bcrypt.compare(password, user.password); // ✅ FIXED
+
+        if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+        const token = generateToken(user._id);
+
+        res.status(200).json({
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
     } catch (err) {
-      res.status(500).json({ message: 'Server error', error: err.message });
+        console.log(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
-  };
+};
+
   
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
