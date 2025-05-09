@@ -4,16 +4,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const connectDB = async () => {
-    const mongoURI = process.env.MONGO_URI || 'mongodb+srv://ubaidqadri97:ubaid1234rty@ubaidcluster.zmbximk.mongodb.net/shadibiyah?retryWrites=true&w=majority&appName=ubaidcluster'; // Default URI for local MongoDB
+    const mongoURI = process.env.MONGO_URI?.trim() || 'mongodb+srv://ubaidqadri97:ubaid1234rty@ubaidcluster.zmbximk.mongodb.net/shadibiyah?retryWrites=true&w=majority&appName=ubaidcluster';
 
-    // Log the URI being used to connect
-    console.log("Connecting to MongoDB using URI:", mongoURI);
+    console.log("🌐 Trying to connect to MongoDB...");
 
     try {
-        await mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log("✅ MongoDB connected");
+        const conn = await mongoose.connect(mongoURI, {
+            serverSelectionTimeoutMS: 10000 // 10 second timeout
+        });
+
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error("❌ MongoDB connection error:", error.message);
+        console.error("❌ MongoDB connection FAILED");
+        console.error("Error:", error.message);
+        process.exit(1);
     }
 };
 
