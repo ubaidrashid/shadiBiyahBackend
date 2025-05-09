@@ -45,7 +45,7 @@ export const registerUser = async (req, res) => {
         });
     } catch (error) {
             console.error("Signup error:", error); // log in Railway logs
-            res.status(500).json({ message: "Server error", error: error.message || error });
+            res.status(500).json({ message: "Server ubbi error", error: error.message || error });
           
           
     }
