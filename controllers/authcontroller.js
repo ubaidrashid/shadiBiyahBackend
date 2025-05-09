@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
 export const registerUser = async (req, res) => {
+    generateToken();
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
