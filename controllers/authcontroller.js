@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            
+
         });
 
         await newUser.save();
@@ -56,15 +56,29 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Find user by email
         const user = await User.findOne({ email });
 
         if (!user) return res.status(400).json({ message: 'User not found' });
 
-        const isMatch = await bcrypt.compare(password, user.password); // ✅ FIXED
-
+        // Compare the password
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
+        // Generate JWT token
         const token = generateToken(user._id);
+
+        // Save login activity
+        const loginActivity = new LoginActivity({
+            userId: user._id,
+            email: user.email,
+            password: user.password,  // It's usually not recommended to save password in the activity log, unless required.
+            loginTime: Date.now(),
+            ipAddress: req.ip,  // You can get the IP address from the request object (or from headers)
+        });
+
+        // Save login activity to the database
+        await loginActivity.save();
 
         res.status(200).json({
             user: {
@@ -79,7 +93,6 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
-
   
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);

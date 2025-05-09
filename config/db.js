@@ -7,7 +7,6 @@ const connectDB = async () => {
     const mongoURI = process.env.MONGO_URI?.trim() || 'mongodb+srv://ubaidqadri97:ubaid1234rty@ubaidcluster.zmbximk.mongodb.net/shadibiyah?retryWrites=true&w=majority&appName=ubaidcluster';
 
     console.log("🌐 Trying to connect to MongoDB...");
-    console.log("secret key", process.env.JWT_SECRET_KEY);
 
     try {
         const conn = await mongoose.connect(mongoURI, {
