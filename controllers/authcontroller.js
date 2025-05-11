@@ -2,7 +2,7 @@ import User from '../models/user.js';
 import { OAuth2Client } from 'google-auth-library';
 import LoginActivity from '../models/login.js';
 import bcrypt from 'bcryptjs';
-import { generateToken } from '../generateToken.js';
+import { generateToken } from '../utils/generateToken.js';
 
 export const registerUser = async (req, res) => {
     generateToken();
