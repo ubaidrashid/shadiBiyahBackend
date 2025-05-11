@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 // dotenv.config();
 export const generateToken = (userId) => {
   const secretKey = "ubbiqadri97"; // ✅ hardcoded
-  console.log(secretKey, 'secret key');
-  console.log(process.env.MONGO_URI, 'mongo in jwt');
+  console.log(process.env.JWT_SECRET_KEY?.trim(), 'secret key');
+  console.log(process.env.MONGO_URI?.trim(), 'mongo in jwt');
 
   return jwt.sign({ id: userId }, secretKey, { expiresIn: '30d' });
 };
