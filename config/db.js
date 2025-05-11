@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 // dotenv.config();
 
 const connectDB = async () => {
-    const mongoURI = process.env.MONGO_URI?.trim() || 'mongodb+srv://ubaidqadri97:ubaid1234rty@ubaidcluster.zmbximk.mongodb.net/shadibiyah?retryWrites=true&w=majority&appName=ubaidcluster';
+    const mongoURI = process.env.MONGO_URI?.trim();
 
     console.log("🌐 Trying to connect to MongoDB...");
 
