@@ -7,13 +7,13 @@ import cors from 'cors';
 import authRoutes from './routes/authroutes.js';
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
     origin: "*", // Development ke liye, ya specific origin: "http://localhost:3000"
 }));
 
-app.use(express.json());
 
 connectDB();
 

@@ -100,6 +100,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const googleLogin = async (req, res) => {
     const { token: googleToken } = req.body;
+    console.log("client id",client); // Log the client ID for debugging
 
     try {
         // Verify the Google ID token
