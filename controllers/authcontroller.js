@@ -96,47 +96,45 @@ export const loginUser = async (req, res) => {
 };
   
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
 export const googleLogin = async (req, res) => {
     const { token: googleToken } = req.body;
-    console.log("client id",client); // Log the client ID for debugging
+
+    console.log("🔥 /google route hit");
+    console.log("🌐 GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+    console.log("📥 Received Google Token:", googleToken);
 
     try {
-        // Verify the Google ID token
-        console.log("Received Google Token:", googleToken); // Log the incoming token
+        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
         const ticket = await client.verifyIdToken({
             idToken: googleToken,
             audience: process.env.GOOGLE_CLIENT_ID,
         });
 
-        console.log("Google ID Token Verified:", ticket); // Log the ticket after successful verification
+        console.log("✅ Google ID Token Verified");
 
         const { email, name } = ticket.getPayload();
-
-        console.log("Extracted user data from token:", { email, name }); // Log extracted user data
+        console.log("👤 Extracted user data:", { email, name });
 
         let user = await User.findOne({ email });
 
         if (!user) {
-            console.log("User not found, registering new user..."); // Log when new user is being created
-            // Register new user if doesn't exist
+            console.log("🆕 User not found — creating new user");
             user = new User({
                 name,
                 email,
-                password: 'googleauthed', // fake password, won't be used
+                password: 'googleauthed',
                 role: 'user',
             });
-            
+
             await user.save();
-            console.log("New user registered:", user); // Log the newly created user
+            console.log("✅ New user saved:", user._id);
+        } else {
+            console.log("👤 User already exists:", user._id);
         }
 
-        // Generate a token for the authenticated user
         const token = generateToken(user._id);
-
-        console.log("Generated JWT Token:", token); // Log the generated token
+        console.log("🔐 Generated JWT Token:", token);
 
         res.status(200).json({
             _id: user._id,
@@ -147,7 +145,7 @@ export const googleLogin = async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Google Verify Error:", err); // Log any error during verification
+        console.error("❌ Google Verify Error:", err);
         res.status(400).json({ message: 'Google login failed', error: err.message });
     }
 };
