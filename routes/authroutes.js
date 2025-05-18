@@ -4,7 +4,7 @@ import {registerUser , loginUser , googleLogin , logoutUser} from '../controller
 
 router.post('/signup',registerUser);
 router.post('/login', loginUser);
-router.post('/google', googleLogin);
+router.post('/google/callback', googleLogin);
 router.post('/logout', logoutUser);
 
 export default router;
